@@ -8,12 +8,15 @@ The build_service() helper wraps every API call through a guard that raises
 an exception if the HTTP method is anything other than GET, preventing any
 accidental write operation from ever reaching Google's servers.
 
-gmail.settings.sharing scope note
+gmail.settings.basic scope note
 -----------------------------------
-Google does not provide a read-only variant of the Gmail settings/sharing
-scope. The scope `gmail.settings.sharing` grants both read and write access
-to delegation settings, but this tool calls *only* `users.settings.delegates.list`
-(a GET request). The read-only guard enforces this at runtime.
+`users.settings.delegates.list` does not accept `gmail.settings.sharing`.
+Google allows only gmail.settings.basic, gmail.readonly, gmail.modify or
+mail.google.com for it. The narrowest of these that does not expose message
+content is `gmail.settings.basic`. It has no read-only variant and grants
+read and write access to basic mail settings, but this tool calls *only*
+`users.settings.delegates.list` (a GET request). The read-only guard
+enforces this at runtime.
 """
 
 from __future__ import annotations
@@ -37,8 +40,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/admin.directory.user.readonly",
     "https://www.googleapis.com/auth/admin.directory.domain.readonly",
     "https://www.googleapis.com/auth/drive.readonly",
-    # No readonly variant exists for delegates.list — only list() is called.
-    "https://www.googleapis.com/auth/gmail.settings.sharing",
+    # delegates.list requires gmail.settings.basic (no readonly variant
+    # without message access) - only list() is called.
+    "https://www.googleapis.com/auth/gmail.settings.basic",
 ]
 
 

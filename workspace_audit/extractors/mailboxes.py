@@ -8,7 +8,8 @@ using the mailbox address itself as the impersonated subject (required by Gmail 
 Delegation is binary — any delegate gets 'Editor / Schreibrechte'.
 Only mailboxes with at least one delegate produce a row in the matrix.
 
-NOTE: gmail.settings.sharing is the only scope that allows delegates.list.
+NOTE: delegates.list does not accept gmail.settings.sharing. This module uses
+      gmail.settings.basic, the narrowest accepted scope without message access.
       Google provides no read-only variant. This module calls list() only.
 """
 
@@ -75,7 +76,7 @@ def extract(
             # the Gmail scope from the issued token.
             gmail_svc = build_service(
                 "gmail", "v1", key_file, impersonate=mailbox,
-                scopes=["https://www.googleapis.com/auth/gmail.settings.sharing"],
+                scopes=["https://www.googleapis.com/auth/gmail.settings.basic"],
             )
             delegates = _list_delegates(gmail_svc, mailbox)
         except Exception as exc:
