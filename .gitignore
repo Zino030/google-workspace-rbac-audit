@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets - never commit
+service-account*.json
+*.json.key
+
+# Audit output (contains organisation data)
+output/
+*.log
